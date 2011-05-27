@@ -58,8 +58,9 @@ enyo.kind({
 
         this.$.api.login({ username: "andrew+checkvist@afresh1.com", remote_key: "GpVkMIwqoDsztUYi0YecZgy56vdgJ61s4fKK7gZ3"});
     },
-    loggedin: function() {
+    loggedIn: function() {
         enyo.log("Logged In", arguments);
+        this.load();
     },
 
     load: function() {
@@ -116,7 +117,7 @@ enyo.kind({
             }
 
             if (r.details.hasOwnProperty("mark")) {
-                this.$.content.parent.addClass( r.details.mark );
+                this.$.taskItem.addClass( r.details.mark );
             }
 
             return true;
@@ -131,7 +132,8 @@ enyo.kind({
 
     checkboxClick: function(inSender, inEvent) {
         enyo.log("checkboxClick", arguments);
-        var task = this.tasks[inEvent.rowIndex];
+        var task = this.$.api.tasks[inEvent.rowIndex];
+        enyo.log(task);
     },
 
     gotLists: function(inSender, inResponse, lists) {

@@ -58,8 +58,7 @@ enyo.kind({
     },
     gotLogin: function(inSender, inResponse, inRequest) { 
         this.token = inResponse;
-        //enyo.log("Token: ", this.token);
-        this.dispatchResponse(this.onGotLogin, this.token);
+        this.dispatchResponse(this.onLoggedIn, this.token);
     },
 
     getLists: function() {
@@ -68,7 +67,6 @@ enyo.kind({
     },
     gotLists: function(inSender, inResponse, inEvent) { 
         var i;
-        enyo.log(inResponse);
         this.lists = inResponse;
         for (i = 0; i < inResponse.length; i++) {
             if (! this.lists_by_id.hasOwnProperty(inResponse[i].id) ) {
