@@ -55,14 +55,16 @@ enyo.kind({
     ],
     create: function() {
         this.inherited(arguments);
-        this.lists = [];
-        this.tasks = {};
-        this.currentList = 0;
+
+        this.$.api.login({ username: "andrew+checkvist@afresh1.com", remote_key: "GpVkMIwqoDsztUYi0YecZgy56vdgJ61s4fKK7gZ3"});
+    },
+    loggedin: function() {
+        enyo.log("Logged In", arguments);
     },
 
     load: function() {
         this.setScrimShowing(true);
-        this.$.api.login("gotCheckvist", "afresh1", "!K\\J/ReR]O" );
+        this.$.api.getLists();
     },
 
     setScrimShowing: function(inShowing) {
@@ -74,10 +76,10 @@ enyo.kind({
         this.$.taskSpinnerLarge.setShowing(inShowing);
     },
 
+    /*
     setItemHighlighted: function(inHighlight) {
             this.$.taskItem.applyStyle("background-color", inHighlight );
     },
-
     itemDragOver: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("lightgreen") },
     itemDragDrop: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("green") },
     itemDragOut: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted(null) },
@@ -86,10 +88,11 @@ enyo.kind({
     itemDragFinish: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted(null) },
     itemMouseHold: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("red") },
     itemMouseRelease: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted(null) },
-
+    */
 
     getListItem: function(inSender, inIndex) {
-        var r = this.lists[inIndex];
+        //enyo.log("getListItem", inIndex);
+        var r = this.$.api.lists[inIndex];
         if (r) {
             this.$.listname.setContent(r.name);
             this.$.count.setContent(r.task_count);
@@ -99,11 +102,8 @@ enyo.kind({
     },
 
     getTaskListItem: function(inSender, inIndex) {
-        if (! this.currentList) {
-            return false;
-        }
-
-        var r = this.tasks[this.currentList][inIndex];
+        //enyo.log("getTaskListItem", inIndex);
+        var r = this.$.api.tasks[inIndex];
         if (r) {
             this.$.content.setValue(r.content);
             this.$.update_line.setContent(r.update_line);
@@ -124,36 +124,29 @@ enyo.kind({
     },
 
     listItemClick: function(inSender, inEvent) {
-        this.currentList = this.lists[ inEvent.rowIndex ].id;
+        var clickedList = this.$.api.lists[ inEvent.rowIndex ].id;
         this.setTaskScrimShowing(true);
-
-        if (this.tasks.hasOwnProperty( this.currentList )) {
-            this.$.tasks.setShowing(true);
-            this.$.tasklist.render();
-            this.setTaskScrimShowing(false);
-        }
-        else {
-            this.$.api.getTasks("gotTasks", this.currentList);
-        }
+        this.$.api.getTasks(clickedList);
     },
 
     checkboxClick: function(inSender, inEvent) {
-        var task = this.tasks[this.currentList][inEvent.rowIndex];
+        enyo.log("checkboxClick", arguments);
+        var task = this.tasks[inEvent.rowIndex];
     },
 
-    gotCheckvist: function(inSender, inResponse, inRequest) {
-        this.lists = inResponse;
+    gotLists: function(inSender, inResponse, lists) {
+        //enyo.log("C.gotLists", arguments);
+
         this.$.list.render();
         this.setScrimShowing(false);
     },
 
-    gotTasks: function(inSender, inResponse, inRequest) {
-        this.tasks[ inResponse[0].checklist_id ] = inResponse;
-        this.$.tasks.setShowing(true);
+    gotTasks: function(inSender, inResponse, tasks) {
+        //enyo.log("C.gotTasks", arguments);
+
         this.$.tasklist.render();
         this.setTaskScrimShowing(false);
-        //this.$.json.setContent(enyo.json.stringify(inResponse));
-        enyo.log(inResponse[12]);
+        this.$.tasks.setShowing(true);
     }
 });
 
