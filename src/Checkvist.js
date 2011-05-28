@@ -5,6 +5,7 @@ enyo.kind({
         {name: "api", kind: "AFresh1.Checkvist.API"},
         {kind: "PageHeader", content: "Enyo Checkvist"},
         {kind: "Button", caption: "Reload", onclick: "load"},
+        //{kind: "Button", caption: "Find Indent", onclick: "findTask"},
         {name: "pane", kind: "SlidingPane", flex: 1, onSelectView: "SlidingSelected",
             components: [
                 {name: "lists", width: "320px", components: [
@@ -26,7 +27,7 @@ enyo.kind({
                     ]}
                 ]},
                 {name: "tasks", flex: 1, dismissible: true, onResize: "slidingResize", showing: false, components: [
-                    { kind: "Scroller", flex: 1, components: [
+                    { name: "taskScroller", kind: "Scroller", flex: 1, components: [
                         {name: "tasklist", kind: "VirtualRepeater",
                             onSetupRow: "getTaskListItem", components: [
                                 { name: "taskItem", kind: "Item", layoutKind: "HFlexLayout",
@@ -35,6 +36,7 @@ enyo.kind({
                                     onmousehold: "itemMouseHold", onmouserelease: "itemMouseRelease",
                                     components: [
                                         {name: "status", kind: "CheckBox", style: "margin-right:10px", onclick: "checkboxClick" },
+                                        {name: "arrow", kind: enyo.CustomButton, toggling: true, showing: false, className: "enyo-menuitem-arrow"},
                                         {name: "content", flex: 1, kind: "RichText" },
                                         { layoutKind: "HFlexLayout", className: "enyo-label", components: [
                                             {name: "update_line" },
@@ -77,6 +79,21 @@ enyo.kind({
         this.$.taskSpinnerLarge.setShowing(inShowing);
     },
 
+    findIndent: function(task_id) {
+        var i, task, indent = 0, tasks = this.$.api.tasks;
+        for (i = 0; i < tasks.length; i++) {
+            if (tasks[i].id == task_id) {
+                task = tasks[i];
+                break;
+            }
+        }
+        if (task && task.parent_id) {
+            indent += 1;
+            indent += this.findIndent(task.parent_id);
+        }
+        return indent;
+    },
+
     /*
     setItemHighlighted: function(inHighlight) {
             this.$.taskItem.applyStyle("background-color", inHighlight );
@@ -104,8 +121,20 @@ enyo.kind({
 
     getTaskListItem: function(inSender, inIndex) {
         //enyo.log("getTaskListItem", inIndex);
-        var r = this.$.api.tasks[inIndex];
+        var indent, r = this.$.api.tasks[inIndex];
         if (r) {
+            indent = this.findIndent(r.id);
+            this.$.arrow.setContent(indent);
+
+            this.$.arrow.applyStyle("margin-left",
+                 (indent * 15) + "px");
+
+            if (inIndex && r.tasks.length && indent >= this.findIndent( this.$.api.tasks[inIndex - 1].id ) ) {
+                enyo.log(this.$.taskItem, r, "is indented more");
+                //this.$.arrow.addClass(".enyo-menuitem-arrow.enyo-button-down");
+                this.$.arrow.setShowing(true);
+            }
+
             this.$.content.setValue(r.content);
             this.$.update_line.setContent(r.update_line);
             this.$.updated_at.setContent(r.updated_at);
@@ -119,15 +148,19 @@ enyo.kind({
             if (r.details.hasOwnProperty("mark")) {
                 this.$.taskItem.addClass( r.details.mark );
             }
-
+            
             return true;
         }
     },
 
     listItemClick: function(inSender, inEvent) {
         var clickedList = this.$.api.lists[ inEvent.rowIndex ].id;
+        if (this.$.api.tasks.length && this.$.api.tasks[0].checklist_id == clickedList) {
+            return false;
+        }
         this.setTaskScrimShowing(true);
         this.$.api.getTasks(clickedList);
+        this.$.taskScroller.scrollTo(1,1);
     },
 
     checkboxClick: function(inSender, inEvent) {
@@ -145,10 +178,15 @@ enyo.kind({
 
     gotTasks: function(inSender, inResponse, tasks) {
         //enyo.log("C.gotTasks", arguments);
+        var i;
+        for (i=0;i<tasks.length;i++) {
+            enyo.log([tasks[i].id,tasks[i].parent_id,tasks[i].position]);
+        }
 
         this.$.tasklist.render();
         this.setTaskScrimShowing(false);
         this.$.tasks.setShowing(true);
+        //this.$.taskScroller.scrollIntoView();
     }
 });
 

@@ -8,6 +8,8 @@ enyo.kind({
 
     published: {
         baseUrl: "https://checkvist.com",
+    },
+    events: {
         onLoggedIn: "loggedIn",
         onGotLists: "gotLists",
         onGotTasks: "gotTasks",
@@ -88,7 +90,46 @@ enyo.kind({
         this._get( this.baseUrl + "/checklists/" + list + "/tasks.json");
     },
     gotTasks: function(inSender, inResponse, inEvent) { 
-        this.tasks = inResponse;
+        var i, j, parents = 0, t = {}, tasks;
+
+        this.tasks.sort(function(a, b) {
+            enyo.log([a.id,a.parent_id,a.position],[b.id,b.parent_id,b.position]);
+            if (a.parent_id === b.parent_id) {
+                enyo.log("sort by position");
+                return a.position - b.position;
+            }
+            enyo.log("sort by parent_id");
+            return a.parent_id - b.parent_id
+        });
+
+
+        for (i=0;i<inResponse.length;i++) {
+            if (!t.hasOwnProperty( inResponse[i].parent_id )) {
+                t[ inResponse[i].parent_id ] = [];
+                parents++;
+            }
+            t[ inResponse[i].parent_id ].push( inResponse[i] );
+        }
+
+        this.tasks = t[0];
+        delete t[0];
+        parents--;
+
+        while (parents > 0) {
+            tasks = [];
+            for (i=0;i<this.tasks.length;i++) {
+                tasks.push( this.tasks[i] );
+                if (t.hasOwnProperty( this.tasks[i].id )) {
+                    for (j=0;j<t[ this.tasks[i].id ].length;j++) {
+                        tasks.push( t[ this.tasks[i].id ][j] );
+                    }
+                    delete t[ this.tasks[i].id ];
+                    parents--;
+                }
+            }
+            this.tasks = tasks;
+        }
+
         this.lists_by_id[ inResponse[0].checklist_id ].tasks = this.tasks;
         this.dispatchResponse(this.onGotTasks, this.tasks);
     }
