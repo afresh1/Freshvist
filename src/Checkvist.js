@@ -35,8 +35,9 @@ enyo.kind({
                                     ondragstart: "itemDragStart", ondrag: "itemDrag", ondragfinish: "itemDragFinish",
                                     onmousehold: "itemMouseHold", onmouserelease: "itemMouseRelease",
                                     components: [
-                                        {name: "status", kind: "CheckBox", style: "margin-right:10px", onclick: "checkboxClick" },
-                                        {name: "arrow", kind: enyo.CustomButton, toggling: true, showing: false, className: "enyo-menuitem-arrow"},
+                                        {name: "status", kind: "CheckBox", onclick: "checkboxClick" },
+                                        {name: "arrow", kind: enyo.CustomButton, style: "min-width:25px;margin-right:5px", 
+                                            toggling: false, showing: true, onclick: "arrowClick"  },
                                         {name: "content", flex: 1, kind: "RichText" },
                                         { layoutKind: "HFlexLayout", className: "enyo-label", components: [
                                             {name: "update_line" },
@@ -77,6 +78,15 @@ enyo.kind({
     setTaskScrimShowing: function(inShowing) {
         this.$.taskScrim.setShowing(inShowing);
         this.$.taskSpinnerLarge.setShowing(inShowing);
+    },
+
+    findParent: function(task) {
+        var i, tasks = this.$.api.tasks;
+        for (i = 0; i < tasks.length; i++) {
+            if (tasks[i].id == task.parent_id) {
+                return tasks[i];
+            }
+        }
     },
 
     findIndent: function(task_id) {
@@ -123,16 +133,19 @@ enyo.kind({
         //enyo.log("getTaskListItem", inIndex);
         var indent, r = this.$.api.tasks[inIndex];
         if (r) {
+            this.$.taskItem.setShowing( r.showing );
+
             indent = this.findIndent(r.id);
-            this.$.arrow.setContent(indent);
+            this.$.arrow.applyStyle("margin-left", (indent * 15) + "px");
 
-            this.$.arrow.applyStyle("margin-left",
-                 (indent * 15) + "px");
 
-            if (inIndex && r.tasks.length && indent >= this.findIndent( this.$.api.tasks[inIndex - 1].id ) ) {
-                enyo.log(this.$.taskItem, r, "is indented more");
-                //this.$.arrow.addClass(".enyo-menuitem-arrow.enyo-button-down");
-                this.$.arrow.setShowing(true);
+            if (r.tasks.length) {
+                //enyo.log(this.$.taskItem, r, "is indented more");
+                this.$.arrow.setToggling(true);
+                this.$.arrow.addClass("enyo-menuitem-arrow");
+                if (!r.collapsed) {
+                    this.$.arrow.addClass("enyo-button-down");
+                }
             }
 
             this.$.content.setValue(r.content);
@@ -160,13 +173,29 @@ enyo.kind({
         }
         this.setTaskScrimShowing(true);
         this.$.api.getTasks(clickedList);
-        this.$.taskScroller.scrollTo(1,1);
+        //this.$.taskScroller.scrollTo(1,1);
     },
 
     checkboxClick: function(inSender, inEvent) {
         enyo.log("checkboxClick", arguments);
         var task = this.$.api.tasks[inEvent.rowIndex];
         enyo.log(task);
+    },
+
+    arrowClick: function(inSender, inEvent) {
+        var i,parent;
+        enyo.log("arrowClick", arguments);
+        var task = this.$.api.tasks[inEvent.rowIndex];
+
+        task.collapsed = task.collapsed ? false : true;
+  
+        for (i=0;i<this.$.api.tasks.length;i++) {
+            task = this.$.api.tasks[i];
+            parent = this.findParent(task);
+            task.showing = parent ? parent.showing && !parent.collapsed : true;
+        }
+
+        this.$.tasklist.render();
     },
 
     gotLists: function(inSender, inResponse, lists) {
@@ -178,15 +207,11 @@ enyo.kind({
 
     gotTasks: function(inSender, inResponse, tasks) {
         //enyo.log("C.gotTasks", arguments);
-        var i;
-        for (i=0;i<tasks.length;i++) {
-            enyo.log([tasks[i].id,tasks[i].parent_id,tasks[i].position]);
-        }
 
         this.$.tasklist.render();
         this.setTaskScrimShowing(false);
         this.$.tasks.setShowing(true);
-        //this.$.taskScroller.scrollIntoView();
+        this.$.taskScroller.scrollIntoView();
     }
 });
 

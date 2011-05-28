@@ -93,17 +93,17 @@ enyo.kind({
         var i, j, parents = 0, t = {}, tasks;
 
         this.tasks.sort(function(a, b) {
-            enyo.log([a.id,a.parent_id,a.position],[b.id,b.parent_id,b.position]);
             if (a.parent_id === b.parent_id) {
-                enyo.log("sort by position");
                 return a.position - b.position;
             }
-            enyo.log("sort by parent_id");
             return a.parent_id - b.parent_id
         });
 
 
         for (i=0;i<inResponse.length;i++) {
+            inResponse[i].collapsed = false;
+            inResponse[i].showing = true;
+
             if (!t.hasOwnProperty( inResponse[i].parent_id )) {
                 t[ inResponse[i].parent_id ] = [];
                 parents++;
