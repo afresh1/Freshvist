@@ -4,7 +4,7 @@ enyo.kind({
     components: [
         {name: "api", kind: "AFresh1.Checkvist.API"},
         {kind: "PageHeader", content: "Enyo Checkvist"},
-        {kind: "Button", caption: "Load", onclick: "load"},
+        {kind: "Button", caption: "Reload", onclick: "load"},
         {name: "pane", kind: "SlidingPane", flex: 1, onSelectView: "SlidingSelected",
             components: [
                 {name: "lists", width: "320px", components: [
@@ -81,14 +81,14 @@ enyo.kind({
     setItemHighlighted: function(inHighlight) {
             this.$.taskItem.applyStyle("background-color", inHighlight );
     },
-    itemDragOver: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("lightgreen") },
-    itemDragDrop: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("green") },
-    itemDragOut: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted(null) },
-    itemDragStart: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("blue") },
-    itemDrag: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("lightblue") },
-    itemDragFinish: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted(null) },
-    itemMouseHold: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted("red") },
-    itemMouseRelease: function(inSender, inEvent) { enyo.log(inSender); this.setItemHighlighted(null) },
+    itemDragOver: function(inSender, inEvent) { enyo.log("itemDragOver",arguments); this.setItemHighlighted("lightgreen") },
+    itemDragDrop: function(inSender, inEvent) { enyo.log("itemDragDrop",arguments); this.setItemHighlighted("green") },
+    itemDragOut: function(inSender, inEvent) { enyo.log("itemDragOut",arguments); this.setItemHighlighted(null) },
+    itemDragStart: function(inSender, inEvent) { enyo.log("itemDragStart",arguments); this.setItemHighlighted("blue") },
+    itemDrag: function(inSender, inEvent) { enyo.log("itemDrag",arguments); this.setItemHighlighted("lightblue") },
+    itemDragFinish: function(inSender, inEvent) { enyo.log("itemDragFinish",arguments); this.setItemHighlighted(null) },
+    itemMouseHold: function(inSender, inEvent) { enyo.log("itemMouseHold",arguments); this.setItemHighlighted("red") },
+    itemMouseRelease: function(inSender, inEvent) { enyo.log("itemMouseRelease",arguments); this.setItemHighlighted(null) },
     */
 
     getListItem: function(inSender, inIndex) {
