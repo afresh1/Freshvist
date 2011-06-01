@@ -131,8 +131,13 @@ enyo.kind({
 
     getTaskListItem: function(inSender, inIndex) {
         //enyo.log("getTaskListItem", inIndex);
-        var indent, r = this.$.api.tasks[inIndex];
+        var indent, client, r = this.$.api.tasks[inIndex];
         if (r) {
+            client = this.$.taskItem.parent;
+            client.addClass("parent_" + r.parent_id);
+            client.addClass("parent_" + r.id);
+            client.addClass("task_" + r.id);
+
             this.$.taskItem.setShowing( r.showing );
 
             indent = this.findIndent(r.id);
