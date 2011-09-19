@@ -1,8 +1,11 @@
 {
-  "id": "com.afresh1.checkvist",
-  "version": "0.0.1",
+  "id": "com.afresh1.freshvist-beta",
+  "version": "0.1.0",
   "vendor": "A.Fresh Special Projects",
   "type": "web",
   "main": "index.html",
-  "title": "Checkvist for webOS"
+  "title": "Freshvist",
+  "uiRevision": 2,
+  "icon": "icon.png",
+  "keywords": ["checkvist", "checklist", "todo", "list","tasks"]
 }

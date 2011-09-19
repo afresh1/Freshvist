@@ -1,13 +1,50 @@
 <!doctype html>
 <html>
 <head>
-<title>Enyo Checkvist for webOS</title>
-<script src="../lib/framework/enyo/0.10/framework/enyo.js" type="text/javascript"></script>
-</head>
+<title>Freshvist - Checkvist for webOS</title>
+<script src="../lib/framework/enyo/0.10/framework/enyo.js" type="text/javascript"></script> </head>
 <body>
+
+<div id="splashContent">
+    <center>
+        <h1>Welcome to Freshvist</h1>
+        <h2>A Checkvist client for webOS</h2>
+    </center>
+    <p>
+    </p>
+    <p>
+    This app is a work in progress, see the support site for a roadmap, but
+    I need people bugging me about finishing it and adding features. It has
+    been going very slowly without feedback. 
+    If you have suggestions or comments, please let me know.
+    </p>
+    <p>
+    I am planning to make this support some sort of cached mode where it 
+    keeps a copy of your lists on-device and syncs changes with the server 
+    when it can, however that is a more difficult problem to solve so it is a
+    fair ways down on the list.
+    </p>
+    <p>
+    I could really use some help from a graphics guru who can help 
+    improve the look and feel of the app and make a better looking icon.
+    </p>
+
+    <p>
+    Now click this preferences button and log into your Checkvist account.
+    </p>
+</div>
+
+<div id="preferencesContent">
+    <p>To get your Username and Remote Key, log on below, use the E-mail
+    address you used to sign up for Checkvist and click the "View/update
+    remote OpenAPI key" link to get the Remote Key.
+    </p>
+</div>
+
 <script type="text/javascript">
-  new AFresh1.Checkvist().renderInto(document.body);
+  new AFresh1.Freshvist().renderInto(document.body);
 </script>
+
 </body>
 </html>
 
