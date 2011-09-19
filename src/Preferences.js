@@ -58,12 +58,7 @@ enyo.kind({
       this.username = inResponse.Freshvist_username;
       this.remote_key = inResponse.Freshvist_remote_key;
 
-      //this.username = "andrew+checkvist@afresh1.com";
-      //this.remote_key = "GpVkMIwqoDsztUYi0YecZgy56vdgJ61s4fKK7gZ3";
-      this.username = "";
-      this.remote_key = "";
-
-      enyo.log(this.username, this.remote_key);
+      //enyo.log(this.username, this.remote_key);
 
       this.showingChanged();
       this.doReceive(this.username, this.remote_key);
