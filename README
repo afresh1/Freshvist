@@ -1,0 +1,11 @@
+This is a webOS app to give access to Checkvist lists on-the-go.
+
+https://checkvist.com
+
+Eventually that means offline support, but that is further down the roadmap.
+
+http://freshvist.afresh1.com/
+
+Patches must be contributed with a compatible license.
+
+Current work is organizing the code and then moving towards a 0.5 release.
