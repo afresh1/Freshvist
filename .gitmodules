@@ -1,0 +1,3 @@
+[submodule "src/api"]
+	path = src/api
+	url = git://github.com/afresh1/checkvist-api-client-js.git
