@@ -2,9 +2,13 @@ This is a webOS app to give access to Checkvist lists on-the-go.
 
 https://checkvist.com
 
+http://freshvist.afresh1.com/
+
 Eventually that means offline support, but that is further down the roadmap.
 
-http://freshvist.afresh1.com/
+This app is written with the HP Enyo javascript framework, but once
+it reaches a 1.0 milestone it will get a fat Mojo version as well.
+
 
 Patches must be contributed with a compatible license.
 
