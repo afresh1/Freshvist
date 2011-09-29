@@ -1,0 +1,3 @@
+#!/bin/sh
+mkdir -p ~/.chrome-FreshVist
+chrome --user-data-dir=~/.chrome-FreshVist/ --disable-web-security ./index.html
