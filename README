@@ -13,3 +13,8 @@ it reaches a 1.0 milestone it will get a fat Mojo version as well.
 Patches must be contributed with a compatible license.
 
 Current work is organizing the code and then moving towards a 0.5 release.
+
+It does depend on a submodule, so after checkout you need to 
+`git submodule init` and `git submodule update` to get it to work.
+
+The submodule is https://github.com/afresh1/checkvist-api-client-js
