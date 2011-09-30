@@ -1,6 +1,6 @@
 enyo.depends(
-   "src/Checkvist.js",
+   "src/Freshvist.js",
    "src/Preferences.js",
    "src/api/checkvist_api.js",
-   "css/Checkvist.css"
+   "css/Freshvist.css"
 );
